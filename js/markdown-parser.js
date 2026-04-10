@@ -66,16 +66,26 @@ function fetchMarkdown(filePath, topic) {
     const articleContent = document.getElementById('article-content');
     
     // Show loading state
-    articleContent.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading...</p>';
+    articleContent.innerHTML = '<div class="loading-container"><div class="spinner"></div><p>Loading content...</p></div>';
     
-    fetch(filePath)
+    // Add cache-busting parameter to prevent stale content
+    const cacheBuster = `?t=${Date.now()}`;
+    const fetchPath = filePath + cacheBuster;
+    
+    console.log('Fetching:', fetchPath);
+    
+    fetch(fetchPath)
         .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Content-Type:', response.headers.get('content-type'));
+            
             if (!response.ok) {
-                throw new Error('File not found');
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             return response.text();
         })
         .then(markdown => {
+            console.log('Markdown loaded, length:', markdown.length);
             const html = parseMarkdown(markdown);
             articleContent.innerHTML = html;
             
@@ -86,6 +96,7 @@ function fetchMarkdown(filePath, topic) {
             updateNavButtons(topic.id);
             markTopicAsRead(topic.id);
             estimateReadingTime(markdown);
+            updateCompleteButton(topic.id);
             
             // Show header and footer
             document.getElementById('content-header').style.display = 'flex';
@@ -93,15 +104,26 @@ function fetchMarkdown(filePath, topic) {
             document.getElementById('toc-sidebar').style.display = 'block';
         })
         .catch(error => {
+            console.error('Error loading content:', error);
+            console.error('File path:', filePath);
+            
             articleContent.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px;">
-                    <h2>Content Not Available</h2>
-                    <p style="color: var(--text-secondary);">This topic is currently being prepared.</p>
-                    <p style="color: var(--text-secondary); font-size: 14px; margin-top: 20px;">
-                        <a href="https://github.com/Raviranjan010/Software_Engineering_cse320" target="_blank">
-                            Check GitHub Repository
+                <div class="error-container">
+                    <h2>⚠️ Content Not Available</h2>
+                    <p class="error-message">This topic is currently being prepared.</p>
+                    <div class="error-details">
+                        <p><strong>Debug Info:</strong></p>
+                        <p>File: <code>${filePath}</code></p>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                    <div class="error-actions">
+                        <a href="https://github.com/Raviranjan010/Software_Engineering_cse320/blob/main/${filePath}" target="_blank" class="btn-primary">
+                            📄 View on GitHub
                         </a>
-                    </p>
+                        <button onclick="location.reload()" class="btn-secondary">
+                            🔄 Retry
+                        </button>
+                    </div>
                 </div>
             `;
             document.getElementById('content-header').style.display = 'flex';
