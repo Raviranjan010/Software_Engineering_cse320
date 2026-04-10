@@ -211,6 +211,10 @@ function updateBreadcrumbs(topic) {
 // Update GitHub Link
 function updateGitHubLink(filePath) {
     const githubLink = document.getElementById('github-link');
+    if (!githubLink) {
+        console.warn('github-link element not found in HTML');
+        return;
+    }
     const githubPath = filePath.replace('content/', '');
     githubLink.href = `https://github.com/Raviranjan010/Software_Engineering_cse320/blob/main/${githubPath}`;
 }
@@ -219,7 +223,15 @@ function updateGitHubLink(filePath) {
 function showWelcome() {
     window.location.hash = '';
     const articleContent = document.getElementById('article-content');
-    articleContent.innerHTML = document.getElementById('welcome-screen-template').innerHTML;
+    const template = document.getElementById('welcome-screen-template');
+    
+    if (!template) {
+        console.error('welcome-screen-template not found!');
+        articleContent.innerHTML = '<h1>Welcome to CSE320</h1><p>Software Engineering - Complete Study Notes</p>';
+        return;
+    }
+    
+    articleContent.innerHTML = template.innerHTML;
     updateWelcomeStats();
     document.getElementById('content-header').style.display = 'none';
     document.getElementById('content-footer').style.display = 'none';
@@ -229,17 +241,28 @@ function showWelcome() {
 // Update Welcome Stats
 function updateWelcomeStats() {
     const progress = getProgress();
-    document.getElementById('stat-topics').textContent = allTopics.length;
-    document.getElementById('stat-completed').textContent = progress.completedCount;
-    document.getElementById('stat-progress').textContent = progress.percentage + '%';
+    
+    // Update stats with null checks
+    const statTopics = document.getElementById('stat-topics');
+    const statCompleted = document.getElementById('stat-completed');
+    const statProgress = document.getElementById('stat-progress');
+    
+    if (statTopics) statTopics.textContent = allTopics.length;
+    if (statCompleted) statCompleted.textContent = progress.completedCount;
+    if (statProgress) statProgress.textContent = progress.percentage + '%';
     
     // Show continue reading if there's history
     if (progress.lastReadTopic) {
         const lastTopic = allTopics.find(t => t.id === progress.lastReadTopic);
         if (lastTopic) {
-            document.getElementById('continue-reading').classList.remove('hidden');
-            document.getElementById('continue-link').href = `#${lastTopic.id}`;
-            document.getElementById('continue-link').textContent = `Continue: ${lastTopic.title}`;
+            const continueReading = document.getElementById('continue-reading');
+            const continueLink = document.getElementById('continue-link');
+            
+            if (continueReading && continueLink) {
+                continueReading.classList.remove('hidden');
+                continueLink.href = `#${lastTopic.id}`;
+                continueLink.textContent = `Continue: ${lastTopic.title}`;
+            }
         }
     }
 }

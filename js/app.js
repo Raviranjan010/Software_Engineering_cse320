@@ -1,19 +1,25 @@
 // Main Application Entry Point
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Add welcome screen template FIRST
+    addWelcomeScreenTemplate();
+    
     // Initialize all modules
     initNavigation();
     initMarkdownParser();
     initProgress();
-    
-    // Add welcome screen template
-    addWelcomeScreenTemplate();
     
     console.log('CSE320 Study Notes initialized successfully');
 });
 
 // Add Welcome Screen Template
 function addWelcomeScreenTemplate() {
+    // Check if template already exists
+    if (document.getElementById('welcome-screen-template')) {
+        console.log('Welcome screen template already exists');
+        return;
+    }
+    
     const template = document.createElement('template');
     template.id = 'welcome-screen-template';
     template.innerHTML = `
@@ -61,28 +67,8 @@ function addWelcomeScreenTemplate() {
         </div>
     `;
     document.body.appendChild(template);
+    console.log('Welcome screen template created successfully');
 }
-
-// Override showWelcome to update stats
-const originalShowWelcome = showWelcome;
-showWelcome = function() {
-    originalShowWelcome();
-    setTimeout(() => {
-        const progress = getProgress();
-        document.getElementById('stat-topics').textContent = allTopics.length;
-        document.getElementById('stat-completed').textContent = progress.completedCount;
-        document.getElementById('stat-progress').textContent = progress.percentage + '%';
-        
-        if (progress.lastReadTopic) {
-            const lastTopic = allTopics.find(t => t.id === progress.lastReadTopic);
-            if (lastTopic) {
-                document.getElementById('continue-reading').classList.remove('hidden');
-                document.getElementById('continue-link').href = `#${lastTopic.id}`;
-                document.getElementById('continue-link').textContent = `Continue: ${lastTopic.title}`;
-            }
-        }
-    }, 100);
-};
 
 // Handle hash changes
 window.addEventListener('hashchange', () => {
@@ -96,6 +82,9 @@ window.addEventListener('hashchange', () => {
     const topic = allTopics.find(t => t.id === hash);
     if (topic) {
         loadTopic(topic);
+    } else {
+        console.warn('Topic not found:', hash);
+        showWelcome();
     }
 });
 
