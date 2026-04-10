@@ -101,18 +101,80 @@ const courseStructure = [
                 id: "black-box-testing",
                 title: "Black Box Testing",
                 file: "content/04_Software_Testing/02_Black_Box_Testing.md"
+            },
+            {
+                id: "white-box-testing",
+                title: "White Box Testing",
+                file: "content/04_Software_Testing/03_White_Box_Testing.md"
+            },
+            {
+                id: "testing-levels",
+                title: "Testing Levels",
+                file: "content/04_Software_Testing/04_Testing_Levels.md"
+            },
+            {
+                id: "automation-testing",
+                title: "Automation Testing",
+                file: "content/04_Software_Testing/05_Automation_Testing.md"
+            },
+            {
+                id: "specialized-testing",
+                title: "Specialized Testing",
+                file: "content/04_Software_Testing/06_Specialized_Testing.md"
             }
         ]
     },
     {
-        module: "Module 5: Project Management",
+        module: "Module 5: Project Management & DevOps",
         icon: "📊",
-        topics: []
+        topics: [
+            {
+                id: "project-management",
+                title: "Project Management",
+                file: "content/05_Project_Management_and_DevOps/01_Project_Management.md"
+            },
+            {
+                id: "cost-estimation",
+                title: "Cost Estimation",
+                file: "content/05_Project_Management_and_DevOps/02_Cost_Estimation.md"
+            },
+            {
+                id: "scm-and-cicd",
+                title: "SCM and CI/CD",
+                file: "content/05_Project_Management_and_DevOps/03_SCM_and_CI_CD.md"
+            },
+            {
+                id: "scheduling-techniques",
+                title: "Scheduling Techniques",
+                file: "content/05_Project_Management_and_DevOps/04_Scheduling_Techniques.md"
+            }
+        ]
     },
     {
         module: "Module 6: Quality & Emerging Tech",
         icon: "✨",
-        topics: []
+        topics: [
+            {
+                id: "quality-standards",
+                title: "Quality Standards",
+                file: "content/06_Quality_and_Emerging_Tech/01_Quality_Standards.md"
+            },
+            {
+                id: "software-maintenance",
+                title: "Software Maintenance",
+                file: "content/06_Quality_and_Emerging_Tech/02_Software_Maintenance.md"
+            },
+            {
+                id: "case-tools",
+                title: "CASE Tools",
+                file: "content/06_Quality_and_Emerging_Tech/03_CASE_Tools.md"
+            },
+            {
+                id: "emerging-technologies",
+                title: "Emerging Technologies",
+                file: "content/06_Quality_and_Emerging_Tech/04_Emerging_Technologies.md"
+            }
+        ]
     }
 ];
 

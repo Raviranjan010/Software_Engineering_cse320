@@ -1,11 +1,6 @@
 // Markdown Parser Configuration
-marked.setOptions({
-    highlight: function(code, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-            return hljs.highlight(code, { language: lang }).value;
-        }
-        return hljs.highlightAuto(code).value;
-    },
+marked.use({
+    renderer: new marked.Renderer(),
     breaks: true,
     gfm: true
 });
@@ -15,17 +10,44 @@ const renderer = new marked.Renderer();
 
 // Override heading to add anchor links
 renderer.heading = function(text, level, raw) {
-    const id = raw.toLowerCase().replace(/[^\w]+/g, '-');
-    return `<h${level} id="${id}"><a href="#${id}" class="heading-anchor">${text}</a></h${level}>`;
+    let headingText = text;
+    let headingLevel = level;
+    let headingRaw = raw;
+
+    // Support for marked v12+ token objects
+    if (typeof text === 'object' && text !== null) {
+        headingText = text.text;
+        headingLevel = text.depth;
+        headingRaw = text.raw;
+    }
+
+    const id = (headingRaw || headingText || '').toLowerCase().replace(/[^\w]+/g, '-');
+    return `<h${headingLevel} id="${id}"><a href="#${id}" class="heading-anchor">${headingText}</a></h${headingLevel}>`;
 };
 
 // Override code blocks to add wrapper and copy button
 renderer.code = function(code, language) {
-    const highlighted = hljs.highlightAuto(code, language ? [language] : undefined).value;
+    let blockCode = code;
+    let blockLang = language;
+    
+    // Support for marked v12+ token objects
+    if (typeof code === 'object' && code !== null) {
+        blockCode = code.text;
+        blockLang = code.lang;
+    }
+    
+    // Safety check in case highlight fails
+    let highlighted = blockCode;
+    try {
+        highlighted = hljs.highlightAuto(blockCode, blockLang ? [blockLang] : undefined).value;
+    } catch (e) {
+        console.warn('Highlighting failed', e);
+    }
+    
     return `
         <div class="code-block-wrapper">
             <button class="copy-code-btn" onclick="copyCode(this)">Copy</button>
-            <pre><code class="hljs ${language || ''}">${highlighted}</code></pre>
+            <pre><code class="hljs ${blockLang || ''}">${highlighted}</code></pre>
         </div>
     `;
 };
@@ -56,6 +78,47 @@ function processSpecialMarkers(markdown) {
     // Process **TIP** markers
     markdown = markdown.replace(/\*\*TIP\*\*\s*(.*?)(?=\n\n|\n#|$)/gs, function(match, content) {
         return `<div class="tip-box"><strong>Tip</strong>${content.trim()}</div>`;
+    });
+
+    // Process MCQs into interactive widgets
+    markdown = processInteractiveQuizzes(markdown);
+    
+    return markdown;
+}
+
+// Extract MCQs and turn into interactive HTML components
+function processInteractiveQuizzes(markdown) {
+    // Match common MCQ pattern: **Q1. Question text** \n options \n **Answer: X** \n *Explanation: Y*
+    const mcqRegex = /\*\*Q(\d+)\.\s*(.*?)\*\*(.*?)\*\*Answer:\s*(.*?)\*\*(?:\s*\*Explanation:\s*(.*?)\*)?/gis;
+    
+    markdown = markdown.replace(mcqRegex, (match, qNum, qText, optionsRaw, answerText, explanation) => {
+        // Parse options
+        let optionsHtml = '';
+        const optionsList = optionsRaw.trim().split('\n');
+        
+        // Extract the correct letter e.g., 'b' from 'b) Non-functional requirement'
+        let correctLetter = answerText.trim().toLowerCase().charAt(0);
+        
+        optionsList.forEach((opt) => {
+            if (!opt.trim()) return;
+            const isCorrect = opt.trim().toLowerCase().startsWith(correctLetter);
+            optionsHtml += `
+                <div class="mcq-option" onclick="checkMCQAnswer(this, ${isCorrect})">
+                    <span class="mcq-option-text">${opt.trim()}</span>
+                </div>
+            `;
+        });
+        
+        const explanationHtml = explanation ? `<div class="mcq-explanation hidden"><em>Explanation:</em> ${explanation.trim()}</div>` : '';
+        
+        return `<div class="quiz-card">
+<div class="quiz-question"><strong>Q${qNum}.</strong> ${qText.trim()}</div>
+<div class="quiz-options">
+${optionsHtml}
+</div>
+<div class="quiz-feedback hidden"></div>
+${explanationHtml}
+</div>`;
     });
     
     return markdown;
@@ -134,8 +197,16 @@ function fetchMarkdown(filePath, topic) {
 
 // Highlight Code Blocks
 function highlightCodeBlocks() {
+    if (typeof hljs === 'undefined') {
+        console.warn('Highlight.js is not loaded yet');
+        return;
+    }
     document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightElement(block);
+        try {
+            hljs.highlightElement(block);
+        } catch (e) {
+            console.warn('Highlighting block failed:', e);
+        }
     });
 }
 
@@ -257,10 +328,43 @@ function setupBackToTop() {
     });
 }
 
+// Global MCQ checking logic
+window.checkMCQAnswer = function(element, isCorrect) {
+    const parentCard = element.closest('.quiz-card');
+    const feedbackEl = parentCard.querySelector('.quiz-feedback');
+    const explanationEl = parentCard.querySelector('.mcq-explanation');
+    
+    // Disable all options
+    parentCard.querySelectorAll('.mcq-option').forEach(opt => {
+        opt.style.pointerEvents = 'none';
+        opt.classList.remove('selected', 'correct', 'wrong');
+        
+        // Highlight the correct answer anyway
+        if (opt.getAttribute('onclick') && opt.getAttribute('onclick').includes('true')) {
+            opt.classList.add('correct-answer-highlight');
+        }
+    });
+    
+    element.classList.add('selected');
+    
+    feedbackEl.classList.remove('hidden');
+    if (isCorrect) {
+        element.classList.add('correct');
+        feedbackEl.innerHTML = '<span class="status-icon">✅</span> Correct!';
+        feedbackEl.className = 'quiz-feedback correct-msg';
+    } else {
+        element.classList.add('wrong');
+        feedbackEl.innerHTML = '<span class="status-icon">❌</span> Incorrect.';
+        feedbackEl.className = 'quiz-feedback wrong-msg';
+    }
+    
+    if (explanationEl) {
+        explanationEl.classList.remove('hidden');
+    }
+}
+
 // Initialize Markdown Parser
 function initMarkdownParser() {
     setupBackToTop();
-    
-    // Make copyCode function globally accessible
     window.copyCode = copyCode;
 }

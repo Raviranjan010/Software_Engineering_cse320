@@ -16,24 +16,34 @@
 }
 
 #article-content h1 {
-    font-size: 2.2em;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 0.3em;
+    font-size: 2.5em;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    border-bottom: none;
     margin-top: 0;
+    margin-bottom: 0.5em;
 }
 
 #article-content h2 {
-    font-size: 1.7em;
+    font-size: 1.8em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.3em;
+    padding-bottom: 0.5em;
+    margin-top: 2em;
 }
 
 #article-content h3 {
     font-size: 1.4em;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-top: 1.8em;
 }
 
 #article-content h4 {
     font-size: 1.2em;
+    font-weight: 600;
+    margin-top: 1.5em;
 }
 
 /* Paragraphs and Text */
@@ -123,27 +133,32 @@
 /* Tables */
 #article-content table {
     width: 100%;
-    border-collapse: collapse;
-    margin: 1.5em 0;
-    background: var(--bg-secondary);
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 2em 0;
+    background: transparent;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
 #article-content th {
-    background: var(--bg-tertiary);
-    padding: 12px 16px;
+    background: var(--bg-secondary);
+    padding: 14px 16px;
     text-align: left;
-    font-weight: 600;
-    border-bottom: 2px solid var(--border-color);
-    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
 }
 
 #article-content td {
-    padding: 10px 16px;
+    padding: 14px 16px;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
+    font-size: 0.95em;
 }
 
 #article-content tr:hover {
@@ -186,56 +201,46 @@
 }
 
 /* Custom Callout Boxes */
-.definition {
-    border-left: 4px solid var(--accent-blue);
+.definition, .exam-tip, .tip-box {
     padding: 16px 20px;
     background: var(--bg-secondary);
-    margin: 1.5em 0;
-    border-radius: 0 4px 4px 0;
+    margin: 2em 0;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
 }
 
-.definition strong:first-child {
-    color: var(--accent-blue);
-    display: block;
-    margin-bottom: 8px;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+/* Subtle accent line inside the box rather than clunky borders */
+.definition::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--accent-blue);
+}
+.exam-tip::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--accent-yellow);
+}
+.tip-box::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--accent-green);
 }
 
-.exam-tip {
-    border-left: 4px solid var(--accent-yellow);
-    padding: 16px 20px;
-    background: var(--bg-secondary);
-    margin: 1.5em 0;
-    border-radius: 0 4px 4px 0;
-}
-
-.exam-tip strong:first-child {
-    color: var(--accent-yellow);
-    display: block;
-    margin-bottom: 8px;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.tip-box {
-    border-left: 4px solid var(--accent-green);
-    padding: 16px 20px;
-    background: var(--bg-secondary);
-    margin: 1.5em 0;
-    border-radius: 0 4px 4px 0;
-}
-
+.definition strong:first-child,
+.exam-tip strong:first-child,
 .tip-box strong:first-child {
-    color: var(--accent-green);
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin-bottom: 8px;
-    font-size: 0.9em;
+    font-size: 0.85em;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.05em;
 }
+
+.definition strong:first-child { color: var(--accent-blue); }
+.exam-tip strong:first-child { color: var(--accent-yellow); }
+.tip-box strong:first-child { color: var(--accent-green); }
 
 /* Horizontal Rule */
 #article-content hr {
@@ -373,8 +378,110 @@
 
 /* MCQ and Question Blocks */
 #article-content p:has(strong:contains("Q")) {
-    margin-top: 2em;
-    margin-bottom: 1em;
+    display: none; /* Hide old raw questions if regex missed any, but generally styling the new ones */
+}
+
+/* Interactive Quiz UI */
+.quiz-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin: 2em 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.quiz-question {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.quiz-question strong {
+    color: var(--accent-blue);
+    margin-right: 8px;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mcq-option {
+    padding: 14px 20px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.mcq-option:hover {
+    border-color: var(--text-secondary);
+    background: var(--bg-hover);
+}
+
+.mcq-option.selected {
+    border-color: var(--text-primary);
+}
+
+.mcq-option.correct {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+
+.mcq-option.wrong {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+    opacity: 0.6;
+}
+
+.mcq-option.correct-answer-highlight {
+    background: rgba(16, 185, 129, 0.05);
+    border-color: var(--accent-green);
+}
+
+.quiz-feedback {
+    margin-top: 20px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quiz-feedback.correct-msg {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-green);
+}
+
+.quiz-feedback.wrong-msg {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--accent-red);
+}
+
+.mcq-explanation {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+.mcq-explanation em {
+    color: var(--text-primary);
+    font-style: normal;
+    font-weight: 600;
+    margin-right: 8px;
 }
 
 /* Print Styles */
