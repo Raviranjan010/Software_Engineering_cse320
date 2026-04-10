@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - GitHub Pages Status</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .test-card {
+            background: #252526;
+            border: 1px solid #3c3c3c;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success { border-left: 4px solid #4ec9b0; }
+        .error { border-left: 4px solid #f44747; }
+        .warning { border-left: 4px solid #dcdcaa; }
+        h1 { color: #569cd6; }
+        h2 { color: #4ec9b0; margin-top: 0; }
+        button {
+            background: #569cd6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #4a8bc7; }
+        pre {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        code { font-family: 'Consolas', 'Monaco', monospace; }
+        .status { font-weight: bold; }
+        .pass { color: #4ec9b0; }
+        .fail { color: #f44747; }
+    </style>
+</head>
+<body>
+    <h1>🔍 GitHub Pages Status Check</h1>
+    <p>This page tests if your GitHub Pages deployment is working correctly.</p>
+
+    <div class="test-card success">
+        <h2>✅ Basic HTML Serving</h2>
+        <p class="status pass">PASS - This page loaded successfully!</p>
+        <p>GitHub Pages is serving HTML files correctly.</p>
+    </div>
+
+    <div class="test-card" id="markdown-test">
+        <h2>📄 Markdown File Access</h2>
+        <p>Testing if markdown files can be fetched...</p>
+        <button onclick="testMarkdownFetch()">Test Markdown Fetch</button>
+        <div id="markdown-result"></div>
+    </div>
+
+    <div class="test-card" id="css-test">
+        <h2>🎨 CSS File Access</h2>
+        <p>Testing if CSS files can be fetched...</p>
+        <button onclick="testCSSFetch()">Test CSS Fetch</button>
+        <div id="css-result"></div>
+    </div>
+
+    <div class="test-card" id="js-test">
+        <h2>⚙️ JavaScript File Access</h2>
+        <p>Testing if JavaScript files can be fetched...</p>
+        <button onclick="testJSFetch()">Test JS Fetch</button>
+        <div id="js-result"></div>
+    </div>
+
+    <div class="test-card warning">
+        <h2>📋 Next Steps</h2>
+        <ol>
+            <li>Click all the "Test" buttons above</li>
+            <li>If all tests pass, visit your main site: 
+                <a href="index.html" style="color: #9cdcfe;">index.html</a>
+            </li>
+            <li>If any test fails, check the error message and console (F12)</li>
+        </ol>
+    </div>
+
+    <script>
+        async function testMarkdownFetch() {
+            const resultDiv = document.getElementById('markdown-result');
+            resultDiv.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                const response = await fetch('content/01_SDLC_and_Requirements/01_Introduction_to_SE.md');
+                const contentType = response.headers.get('content-type');
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="test-card success">
+                            <p class="status pass">✅ PASS</p>
+                            <p><strong>Status:</strong> ${response.status} OK</p>
+                            <p><strong>Content-Type:</strong> ${contentType}</p>
+                            <p><strong>Content Length:</strong> ${text.length} characters</p>
+                            <p><strong>Preview:</strong> ${text.substring(0, 100)}...</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="test-card error">
+                        <p class="status fail">❌ FAIL</p>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Solution:</strong> Make sure .nojekyll file exists and content folder is on GitHub</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testCSSFetch() {
+            const resultDiv = document.getElementById('css-result');
+            resultDiv.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                const response = await fetch('css/main.css');
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="test-card success">
+                            <p class="status pass">✅ PASS</p>
+                            <p><strong>Status:</strong> ${response.status} OK</p>
+                            <p><strong>Content Length:</strong> ${text.length} characters</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="test-card error">
+                        <p class="status fail">❌ FAIL</p>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testJSFetch() {
+            const resultDiv = document.getElementById('js-result');
+            resultDiv.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                const response = await fetch('js/navigation.js');
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="test-card success">
+                            <p class="status pass">✅ PASS</p>
+                            <p><strong>Status:</strong> ${response.status} OK</p>
+                            <p><strong>Content Length:</strong> ${text.length} characters</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="test-card error">
+                        <p class="status fail">❌ FAIL</p>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testMarkdownFetch();
+                testCSSFetch();
+                testJSFetch();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
