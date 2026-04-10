@@ -1,0 +1,333 @@
+/* Markdown Content Styling */
+#article-content {
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+#article-content h1,
+#article-content h2,
+#article-content h3,
+#article-content h4 {
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-primary);
+}
+
+#article-content h1 {
+    font-size: 2.2em;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.3em;
+    margin-top: 0;
+}
+
+#article-content h2 {
+    font-size: 1.7em;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.3em;
+}
+
+#article-content h3 {
+    font-size: 1.4em;
+}
+
+#article-content h4 {
+    font-size: 1.2em;
+}
+
+/* Paragraphs and Text */
+#article-content p {
+    margin-bottom: 1.2em;
+    color: var(--text-primary);
+}
+
+#article-content strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+#article-content em {
+    font-style: italic;
+}
+
+/* Links */
+#article-content a {
+    color: var(--link-color);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+}
+
+#article-content a:hover {
+    border-bottom-color: var(--link-color);
+}
+
+/* Code */
+#article-content code {
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--accent-orange);
+}
+
+#article-content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    position: relative;
+}
+
+#article-content pre code {
+    background: transparent;
+    padding: 0;
+    color: var(--text-primary);
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+/* Code block copy button */
+.code-block-wrapper {
+    position: relative;
+}
+
+.copy-code-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.code-block-wrapper:hover .copy-code-btn {
+    opacity: 1;
+}
+
+.copy-code-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Tables */
+#article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#article-content th {
+    background: var(--bg-tertiary);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+#article-content td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+#article-content tr:hover {
+    background: var(--bg-hover);
+}
+
+#article-content tr:last-child td {
+    border-bottom: none;
+}
+
+/* Lists */
+#article-content ul,
+#article-content ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+#article-content li {
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+}
+
+#article-content li > ul,
+#article-content li > ol {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+}
+
+/* Blockquotes */
+#article-content blockquote {
+    border-left: 4px solid var(--accent-blue);
+    padding: 12px 20px;
+    margin: 1.5em 0;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+#article-content blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Custom Callout Boxes */
+.definition {
+    border-left: 4px solid var(--accent-blue);
+    padding: 16px 20px;
+    background: var(--bg-secondary);
+    margin: 1.5em 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.definition strong:first-child {
+    color: var(--accent-blue);
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.exam-tip {
+    border-left: 4px solid var(--accent-yellow);
+    padding: 16px 20px;
+    background: var(--bg-secondary);
+    margin: 1.5em 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.exam-tip strong:first-child {
+    color: var(--accent-yellow);
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tip-box {
+    border-left: 4px solid var(--accent-green);
+    padding: 16px 20px;
+    background: var(--bg-secondary);
+    margin: 1.5em 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.tip-box strong:first-child {
+    color: var(--accent-green);
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Horizontal Rule */
+#article-content hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 2em 0;
+}
+
+/* Images */
+#article-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+/* Mermaid Diagrams */
+.mermaid {
+    background: white;
+    padding: 20px;
+    border-radius: 4px;
+    margin: 1.5em 0;
+    text-align: center;
+}
+
+.mermaid svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Definition Lists */
+#article-content dl {
+    margin: 1.5em 0;
+}
+
+#article-content dt {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5em;
+}
+
+#article-content dd {
+    margin-left: 2em;
+    margin-bottom: 1em;
+    color: var(--text-secondary);
+}
+
+/* Checkboxes */
+#article-content input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Keyboard Shortcuts */
+#article-content kbd {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--text-primary);
+}
+
+/* MCQ and Question Blocks */
+#article-content p:has(strong:contains("Q")) {
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+/* Print Styles */
+@media print {
+    #sidebar,
+    #toc-sidebar,
+    #progress-bar,
+    #content-footer,
+    #back-to-top {
+        display: none;
+    }
+    
+    #main-content {
+        margin-left: 0;
+    }
+    
+    #article-content {
+        max-width: 100%;
+        color: black;
+        background: white;
+    }
+    
+    #article-content a {
+        color: black;
+    }
+}
